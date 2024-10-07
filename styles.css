@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #87CEEB; /* Color de fondo del cielo */
+    font-family: Arial, sans-serif;
+}
+
+#game {
+    position: relative;
+    width: 400px;
+    height: 600px;
+    border: 2px solid #000;
+    overflow: hidden;
+    background-color: #fff; /* Color del camino */
+}
+
+#player {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    width: 50px; /* Cambia esto según la imagen */
+    height: 80px; /* Cambia esto según la imagen */
+    background-image: url('player.jpg'); /* Añade la imagen del jugador */
+    background-size: cover;
+    transform: translateX(-50%);
+}
+
+#obstacle {
+    position: absolute;
+    bottom: 20px;
+    left: 100%;
+    width: 50px; /* Cambia esto según la imagen */
+    height: 50px; /* Cambia esto según la imagen */
+    background-image: url('OIP.jpg'); /* Añade la imagen del obstáculo */
+    background-size: cover;
+}
+
+#game-over {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    color: red;
+    display: none; /* Oculto inicialmente */
+}
