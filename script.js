@@ -11,8 +11,8 @@ function createObstacle() {
     const obstacle = document.createElement('div');
     obstacle.classList.add('obstacle');
     obstacle.style.left = '400px'; // Posición inicial
-    obstacle.style.width = '30px'; // Ajuste del tamaño del obstáculo
-    obstacle.style.height = '50px'; // Ajuste del tamaño del obstáculo
+    obstacle.style.width = '30px'; // Tamaño del obstáculo
+    obstacle.style.height = '50px';
     gameArea.appendChild(obstacle);
     obstacles.push(obstacle);
     moveObstacle(obstacle);
@@ -26,20 +26,22 @@ function moveObstacle(obstacle) {
             clearInterval(obstacleInterval);
             return;
         }
-        
+
+        // Verificar colisión
+        const playerBottom = parseInt(player.style.bottom) || 20; // Asumimos 20px de base si es 0
+        if (obstaclePosition > 0 && obstaclePosition < 50 && playerBottom < 50) {
+            // Si el jugador está a la altura del obstáculo y no saltó lo suficiente
+            triggerGameOver();
+            clearInterval(obstacleInterval);
+            return;
+        }
+
+        // Mover obstáculo
         if (obstaclePosition < -30) {
             clearInterval(obstacleInterval);
             gameArea.removeChild(obstacle);
             obstacles = obstacles.filter(obs => obs !== obstacle); // Eliminar de la lista
             score += 1; // Aumentar puntuación
-        } else if (
-            obstaclePosition > 0 && obstaclePosition < 50 && 
-            parseInt(player.style.bottom) < 50
-        ) {
-            // Colisión
-            gameOver = true;
-            gameOverMessage.style.display = 'block';
-            clearInterval(obstacleInterval);
         } else {
             obstaclePosition -= 5; // Ajusta la velocidad
             obstacle.style.left = obstaclePosition + 'px';
@@ -72,12 +74,32 @@ function jump() {
     }, 20);
 }
 
+// Función para activar el game over
+function triggerGameOver() {
+    gameOver = true;
+    gameOverMessage.style.display = 'block';
+    obstacles.forEach(obstacle => {
+        gameArea.removeChild(obstacle);
+    });
+    obstacles = [];
+}
+
 // Controles del teclado
 document.addEventListener('keydown', (event) => {
     if (event.key === ' ' && !gameOver) {
         jump();
+    } else if (event.key === 'r' && gameOver) {
+        resetGame();
     }
 });
+
+// Reiniciar lógica del juego
+function resetGame() {
+    gameOver = false;
+    gameOverMessage.style.display = 'none';
+    score = 0;
+    createObstacle();
+}
 
 // Generar obstáculos cada 2 segundos
 const obstacleGeneration = setInterval(() => {
@@ -88,22 +110,5 @@ const obstacleGeneration = setInterval(() => {
     }
 }, 2000);
 
-// Reiniciar el juego
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'r' && gameOver) {
-        resetGame();
-    }
-});
-
-// Reiniciar lógica del juego
-function resetGame() {
-    gameOver = false;
-    gameOverMessage.style.display = 'none';
-    obstacles.forEach(obstacle => gameArea.removeChild(obstacle));
-    obstacles = [];
-    score = 0;
-    createObstacle();
-}
- 
 // Iniciar el juego
 createObstacle();
